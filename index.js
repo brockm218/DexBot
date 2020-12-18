@@ -25,16 +25,14 @@ async function main() {
                     refreshToken,
                     expiryTimestamp: expiryDate === null ? null : expiryDate.getTime()
                 };
-                await fs.writeFile('./tokens.json', JSON.stringify(newTokenData, null, 4), 'UTF-8')
+                await fs.writeFile('./tokens.json', JSON.stringify(newTokenData, null, 4), 'UTF-8');
             }
         }
     );
 
-    const chatChannels = ['twitchChannel1', 'twitchChannel2'];
+    const chatChannels = ['twitchChannel1', 'twitchChannel2']; // DECLARE YOUR TWITCH CHANNELS HERE
 
-    const chatClient = new ChatClient(authProvider, {
-        channels: chatChannels
-    });
+    const chatClient = new ChatClient(authProvider, { channels: chatChannels });
     await chatClient.connect()
         .then(() => {
             console.log('Twitch Client Connected.');
@@ -48,13 +46,11 @@ async function main() {
     });
     await dClient.login(process.env.DISCORD_BOT_TOKEN);
 
-    const apiClient = new ApiClient({
-        authProvider
-    });
+    const apiClient = new ApiClient({ authProvider });
     const pubSubClient = new PubSubClient();
 
     const UserId = await pubSubClient.registerUserListener(apiClient);
-    const broadcasterId = apiClient.helix.users.getUserByName(chatChannels[0]);
+    const broadcasterId = apiClient.helix.users.getUserByName(chatChannels[0]); // replace 0 with the desired index of chatChannels['0', '1', '2']
     const logChannelId = '123456789012345678'; // Copy this from Developer Mode; Right-click the text channel > Copy ID
     const logChannel = await dClient.channels.fetch(logChannelId)
         .catch(console.error);
@@ -118,7 +114,7 @@ async function main() {
             console.log(`${target} was un-banned by ${moderator}.`);
 
             const embed = new Discord.MessageEmbed()
-                .setTitle('**Spoodah** - New Chat Event')
+                .setTitle('New Chat Event')
                 .setColor('0x00ff7f')
                 .setTimestamp()
                 .addField('Unban', `${target} was un-banned by ${moderator}.`);
@@ -132,7 +128,7 @@ async function main() {
             console.log(`${target} was un-banned by ${moderator}.`);
 
             const embed = new Discord.MessageEmbed()
-                .setTitle('**Spoodah** - New Chat Event')
+                .setTitle('New Chat Event')
                 .setColor('0x00ff7f')
                 .setTimestamp()
                 .addField('Unban', `${target} was un-banned by ${moderator}.`);
@@ -142,11 +138,10 @@ async function main() {
 
         if (message.action == 'vip') {
             const target = message.args[0];
-            const moderator = message.userName;
             console.log(`${target} was granted VIP by the broadcaster.`);
 
             const embed = new Discord.MessageEmbed()
-                .setTitle('**Spoodah** - New Chat Event')
+                .setTitle('New Chat Event')
                 .setColor('0xe281aa')
                 .setTimestamp()
                 .addField('VIP', `${target} was granted VIP by the broadcaster.`);
@@ -157,23 +152,9 @@ async function main() {
 
     chatClient.onMessage((channel, user, message, msg) => {
         if (msg.isCheer) {
-            var bitsMsg = `PogChamp BITS DONATION!!! PogChamp Thank you so much @${user} for the ${msg.bits} bitties ! You're too kind! spoodLove`;
+            const bitsMsg = `PogChamp BITS DONATION!!! PogChamp Thank you so much @${user} for the ${msg.bits} bits! You're too kind! TwitchUnity`;
             console.log(channel, "-", bitsMsg);
             chatClient.action(channel, bitsMsg);
-        }
-        if (message.toLowerCase() === `!myd`) {
-            if (msg.userInfo.isBroadcaster) {
-                var dickMsg = `spoodWYA CRITICAL ERROR: User's dick is too gigantic and broke the scale. System reboot in progress... spoodDab`;
-                console.log(channel, "-", dickMsg);
-                chatClient.action(channel, dickMsg);
-                return;
-            } else {
-                var dicksize = Math.floor((Math.random() * 10) + 1);
-            }
-
-            var dickMsg = `PogChamp @${msg.userInfo.displayName} has a dick size of ` + dicksize + ` inches. TwitchUnity`;
-            console.log(channel, "-", dickMsg);
-            chatClient.action(channel, dickMsg);
         }
     });
 
@@ -181,7 +162,7 @@ async function main() {
     chatClient.onCommunitySub((channel, user, subInfo) => {
         const previousGiftCount = giftCounts.get(user) ?? 0;
         giftCounts.set(user, previousGiftCount + subInfo.count);
-        var massGiftMsg = `spoodGLB GIFT SUB HYPE!! spoodGLB Thank you @${user} for gifting ${subInfo.count} subs to the squadron! spoodLove`;
+        const massGiftMsg = `<3 GIFT SUB HYPE!! <3 Thank you @${user} for gifting ${subInfo.count} subs to the chat! TwitchUnity`;
         console.log(channel, "-", massGiftMsg);
         chatClient.action(channel, massGiftMsg);
     });
@@ -192,20 +173,20 @@ async function main() {
         if (previousGiftCount > 0) {
             giftCounts.set(user, previousGiftCount - 1);
         } else {
-            var singleGiftMsg = `spoodGLB GIFT SUB HYPE!! spoodGLB Thank you ${user} for gifting a sub to ${recipient} spoodLove!`;
+            const singleGiftMsg = `<3 GIFT SUB HYPE!! <3 Thank you ${user} for gifting a sub to ${recipient}! TwitchUnity`;
             console.log(channel, "-", singleGiftMsg);
             chatClient.action(channel, singleGiftMsg);
         }
     });
 
     chatClient.onSub((channel, user) => {
-        var subMsg = `spoodHype NEW SUB!!! spoodHype @${user} just subscribed! Welcome to the party <3 spoodGLB`;
+        const subMsg = `PogChamp NEW SUB!!! PogChamp @${user} just subscribed! Welcome to the party! <3 HeyGuys`;
         console.log(channel, "-", subMsg);
         chatClient.action(channel, subMsg);
     });
 
     chatClient.onResub((channel, user, subInfo) => {
-        var resubMsg = `spoodHype RESUB!!! spoodHype Welcome back @${user} for ${subInfo.months} months spoodGLB`;
+        const resubMsg = `PogChamp RESUB!!! PogChamp Welcome back @${user} for ${subInfo.months} months TwitchUnity`;
         console.log(channel, "-", resubMsg);
         chatClient.action(channel, resubMsg);
     });
