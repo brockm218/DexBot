@@ -135,19 +135,6 @@ async function main() {
 
             logChannel.send(embed);
         }
-
-        if (message.action == 'vip') {
-            const target = message.args[0];
-            console.log(`${target} was granted VIP by the broadcaster.`);
-
-            const embed = new Discord.MessageEmbed()
-                .setTitle('New Chat Event')
-                .setColor('0xe281aa')
-                .setTimestamp()
-                .addField('VIP', `${target} was granted VIP by the broadcaster.`);
-
-            logChannel.send(embed);
-        }
     });
 
     chatClient.onMessage((channel, user, message, msg) => {
@@ -190,6 +177,21 @@ async function main() {
         console.log(channel, "-", resubMsg);
         chatClient.action(channel, resubMsg);
     });
+
+    chatClient.onHosted((channel, byChannel, auto, viewers) => {
+        if (viewers >= 50) {
+            var hostMsg = `PogChamp NEW HOST!!! PogChamp Thank you so much ${byChannel} for the host with ${viewers} viewers! TwitchUnity Check them out at https://twitch.tv/${byChannel}`;
+        }
+        else if(auto) {
+            var hostMsg = `PogChamp NEW HOST!!! PogChamp Thank you so much for the automatic host from ${byChannel}! TwitchUnity Thank you for adding us to your automatic host list <3`;
+        }
+        else {
+            var hostMsg = `PogChamp NEW HOST!!! PogChamp Thank you so much ${byChannel} for the host with ${viewers}! TwitchUnity`;
+        }
+        console.log(channel, "=", hostMsg);
+        chatClient.action(hostMsg);
+    });
+}
 }
 
 main();
